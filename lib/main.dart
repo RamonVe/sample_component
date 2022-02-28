@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Surveyz',
+      title: 'Sample Survey',
       theme: ThemeData(
         // This is the theme of the application.
         primarySwatch: Colors.blueGrey,
@@ -46,9 +47,13 @@ class _SampleSurveyState extends State<SampleSurvey> {
   void _updateCursorLocation(PointerEvent details) {
     setState(() {
       x = details.position.dx;
-      print('x = ' + x.toString());
+      if (kDebugMode) {
+        print('x = ' + x.toString());
+      }
       y = details.position.dy;
-      print('y = ' + y.toString());
+      if (kDebugMode) {
+        print('y = ' + y.toString());
+      }
     });
   }
 
@@ -69,36 +74,30 @@ class _SampleSurveyState extends State<SampleSurvey> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ConstrainedBox(
-              constraints: BoxConstraints.tight(const Size(300.0, 200.0)),
-              child: MouseRegion(
-                onHover: _updateCursorLocation,
-                child: Container(
-                  color: Colors.blueGrey,
-                ),
-              ),
-            ),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // var parentHeight = constraints.maxHeight;
+            // var parentWidth = constraints.maxWidth;
+            return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Padding(padding: EdgeInsets.all(20.00)),
+                  ConstrainedBox(
+                    constraints: BoxConstraints.tight(const Size(360, 200)),
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.grab,
+                      onHover: _updateCursorLocation,
+                      child: Container(
+                        color: Colors.blueGrey,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+          },
         ),
       ),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
