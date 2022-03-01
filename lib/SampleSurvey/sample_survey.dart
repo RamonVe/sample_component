@@ -25,13 +25,23 @@ class _SampleSurveyState extends State<SampleSurvey> {
 
   void _updateCursorLocation(PointerEvent details) {
     setState(() {
-      x = details.position.dx;
+
+      x = details.localPosition.dx;
       if (kDebugMode) {
         print('x = ' + x.toString());
       }
-      y = details.position.dy;
+      var xAxisPercent = xPercent(x);
+      if (kDebugMode) {
+        print(xAxisPercent);
+      }
+
+      y = details.localPosition.dy;
       if (kDebugMode) {
         print('y = ' + y.toString());
+      }
+      var yAxisPercent = yPercent(y);
+      if (kDebugMode) {
+        print(yAxisPercent);
       }
     });
   }
@@ -67,6 +77,9 @@ class _SampleSurveyState extends State<SampleSurvey> {
                     textAlign: TextAlign.center,
                     textScaleFactor: 2.0,
                   ),
+                  // LinearProgressIndicator(
+                  //   value: ,
+                  // )
                 ],
               ),
               Column(
@@ -79,7 +92,7 @@ class _SampleSurveyState extends State<SampleSurvey> {
                     textAlign: TextAlign.center,
                     textScaleFactor: 2.0,
                   ),
-                  ConstrainedBox(
+                  Container(
                     constraints: BoxConstraints.tight(
                       const Size(300, 200),
                     ),
@@ -115,5 +128,15 @@ class _SampleSurveyState extends State<SampleSurvey> {
         ],
       ),
     );
+  }
+
+  double xPercent(double x) {
+    var xPercent = x / 300.00;
+    return xPercent;
+  }
+
+  double yPercent(double y) {
+    var yPercent = y / 200.00;
+    return yPercent;
   }
 }
