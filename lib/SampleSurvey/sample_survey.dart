@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 
 class SampleSurvey extends StatefulWidget {
   const SampleSurvey({Key? key, required this.title}) : super(key: key);
@@ -20,30 +21,36 @@ class SampleSurvey extends StatefulWidget {
 }
 
 class _SampleSurveyState extends State<SampleSurvey> {
-  double x = 0.0;
-  double y = 0.0;
+  double xGrid = 0.0;
+  double yGrid = 0.0;
+
+  double xDecimal = 0.00;
+  double yDecimal = 0.00;
 
   void _updateCursorLocation(PointerEvent details) {
-    setState(() {
+    setState(
+      () {
+        xGrid = details.localPosition.dx;
+        if (kDebugMode) {
+          print('x = ' + xGrid.toString());
+        }
 
-      x = details.localPosition.dx;
-      if (kDebugMode) {
-        print('x = ' + x.toString());
-      }
-      var xAxisPercent = xPercent(x);
-      if (kDebugMode) {
-        print(xAxisPercent);
-      }
+        xDecimal = calculator(xGrid, 300);
+        if (kDebugMode) {
+          print('x % = ' + xDecimal.toString());
+        }
 
-      y = details.localPosition.dy;
-      if (kDebugMode) {
-        print('y = ' + y.toString());
-      }
-      var yAxisPercent = yPercent(y);
-      if (kDebugMode) {
-        print(yAxisPercent);
-      }
-    });
+        yGrid = details.localPosition.dy;
+        if (kDebugMode) {
+          print('y = ' + yGrid.toString());
+        }
+
+        yDecimal = calculator(yGrid, 200);
+        if (kDebugMode) {
+          print('y % = ' + yDecimal.toString());
+        }
+      },
+    );
   }
 
   @override
@@ -62,35 +69,47 @@ class _SampleSurveyState extends State<SampleSurvey> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+        children: <Widget>[
+          const Padding(
+            padding: EdgeInsets.all(10.00),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const <Widget>[
+              Text(
+                "A Really Long Sample Survey Title: Thing A Vs. Thing B",
+                textScaleFactor: 2.0,
+              ),
+            ],
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Column(
-                children: const <Widget>[
-                  Padding(
+                children: <Widget>[
+                  const Padding(
                     padding: EdgeInsets.all(20.00),
                   ),
-                  Text(
-                    "A",
-                    textAlign: TextAlign.center,
-                    textScaleFactor: 2.0,
+                  SizedBox(
+                    width: 25,
+                    height: 200,
+                    child: FAProgressBar(
+                      direction: Axis.vertical,
+                      verticalDirection: VerticalDirection.up,
+                      currentValue: 50,
+                      backgroundColor: Colors.blueGrey,
+                      progressColor: Colors.blue,
+                      displayText: '%',
+                    ),
                   ),
-                  // LinearProgressIndicator(
-                  //   value: ,
-                  // )
                 ],
               ),
               Column(
                 children: <Widget>[
                   const Padding(
                     padding: EdgeInsets.all(20.00),
-                  ),
-                  const Text(
-                    "Sample Topic: A vs B",
-                    textAlign: TextAlign.center,
-                    textScaleFactor: 2.0,
                   ),
                   Container(
                     constraints: BoxConstraints.tight(
@@ -106,22 +125,25 @@ class _SampleSurveyState extends State<SampleSurvey> {
                   ),
                 ],
               ),
-              const Padding(
-                padding: EdgeInsets.all(10.00),
-              ),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: const <Widget>[
-              Padding(
+            children: <Widget>[
+              const Padding(
                 padding: EdgeInsets.all(20.00),
               ),
-              Text(
-                "B",
-                textAlign: TextAlign.center,
-                textScaleFactor: 2.0,
+              SizedBox(
+                width: 300,
+                height: 25,
+                child: FAProgressBar(
+                  direction: Axis.horizontal,
+                  currentValue: 50,
+                  backgroundColor: Colors.blueGrey,
+                  progressColor: Colors.blue,
+                  displayText: '%',
+                ),
               ),
             ],
           ),
@@ -130,13 +152,9 @@ class _SampleSurveyState extends State<SampleSurvey> {
     );
   }
 
-  double xPercent(double x) {
-    var xPercent = x / 300.00;
-    return xPercent;
-  }
-
-  double yPercent(double y) {
-    var yPercent = y / 200.00;
-    return yPercent;
+  double calculator(double grid, double maxGrid) {
+    var decimal = grid / maxGrid;
+    var formattedDecimal = double.parse(decimal.toStringAsFixed(2));
+    return formattedDecimal;
   }
 }
