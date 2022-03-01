@@ -73,25 +73,38 @@ class _SampleSurveyState extends State<SampleSurvey> {
           const Padding(
             padding: EdgeInsets.all(10.00),
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const <Widget>[
-              Text(
-                "A Really Long Sample Survey Title: Thing A Vs. Thing B",
-                textScaleFactor: 2.0,
-              ),
-            ],
+          SizedBox(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const <Widget>[
+                Flexible(
+                  child: Text(
+                    "A Really Long Sample Survey Title: Thing A Vs. Thing B",
+                    textScaleFactor: 1.5,
+                  ),
+                ),
+              ],
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Column(
-                children: <Widget>[
-                  const Padding(
-                    padding: EdgeInsets.all(20.00),
+                children: const [
+                  RotatedBox(
+                    quarterTurns: 3,
+                    child: Text(
+                      'A Really Long Name For Thing A',
+                      textDirection: TextDirection.rtl,
+                      textScaleFactor: 1.25,
+                    ),
                   ),
+                ],
+              ),
+              Column(
+                children: <Widget>[
                   SizedBox(
                     width: 25,
                     height: 200,
@@ -104,46 +117,54 @@ class _SampleSurveyState extends State<SampleSurvey> {
                       displayText: '%',
                     ),
                   ),
+                  const Padding(
+                    padding: EdgeInsets.all(15.00),
+                  ),
                 ],
+              ),
+              const Padding(
+                padding: EdgeInsets.all(2.5),
               ),
               Column(
                 children: <Widget>[
                   const Padding(
-                    padding: EdgeInsets.all(20.00),
+                    padding: EdgeInsets.all(10.00),
                   ),
-                  Container(
-                    constraints: BoxConstraints.tight(
-                      const Size(300, 200),
-                    ),
-                    child: MouseRegion(
-                      cursor: SystemMouseCursors.grab,
-                      onHover: _updateCursorLocation,
-                      child: Container(
-                        color: Colors.blueGrey,
+                  Column(
+                    children: [
+                      Container(
+                        constraints: BoxConstraints.tight(
+                          const Size(300, 200),
+                        ),
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.grab,
+                          onHover: _updateCursorLocation,
+                          child: Container(
+                            color: Colors.blueGrey,
+                          ),
+                        ),
                       ),
-                    ),
+                      const Padding(
+                        padding: EdgeInsets.all(2.5),
+                      ),
+                      SizedBox(
+                        width: 300,
+                        height: 25,
+                        child: FAProgressBar(
+                          direction: Axis.horizontal,
+                          currentValue: 50,
+                          backgroundColor: Colors.blueGrey,
+                          progressColor: Colors.blue,
+                          displayText: '%',
+                        ),
+                      ),
+                      const Text(
+                        "A Really Long Name For Thing B",
+                        textScaleFactor: 1.25,
+                      ),
+                    ],
                   ),
                 ],
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.all(20.00),
-              ),
-              SizedBox(
-                width: 300,
-                height: 25,
-                child: FAProgressBar(
-                  direction: Axis.horizontal,
-                  currentValue: 50,
-                  backgroundColor: Colors.blueGrey,
-                  progressColor: Colors.blue,
-                  displayText: '%',
-                ),
               ),
             ],
           ),
