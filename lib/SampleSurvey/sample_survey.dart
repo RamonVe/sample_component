@@ -38,9 +38,10 @@ class _SampleSurveyState extends State<SampleSurvey> {
         xDecimal = calculator(xGrid, 300);
         if (kDebugMode) {
           print('x % = ' + xDecimal.toString());
+          print('\n');
         }
 
-        yGrid = details.localPosition.dy;
+        yGrid = yTransform(details.localPosition.dy);
         if (kDebugMode) {
           print('y = ' + yGrid.toString());
         }
@@ -48,6 +49,7 @@ class _SampleSurveyState extends State<SampleSurvey> {
         yDecimal = calculator(yGrid, 200);
         if (kDebugMode) {
           print('y % = ' + yDecimal.toString());
+          print('\n');
         }
       },
     );
@@ -108,10 +110,11 @@ class _SampleSurveyState extends State<SampleSurvey> {
                   SizedBox(
                     width: 25,
                     height: 200,
+                    // Y axis bar
                     child: FAProgressBar(
                       direction: Axis.vertical,
                       verticalDirection: VerticalDirection.up,
-                      currentValue: 50,
+                      currentValue: (yDecimal * 100).toInt(),
                       backgroundColor: Colors.blueGrey,
                       progressColor: Colors.blue,
                       displayText: '%',
@@ -150,9 +153,10 @@ class _SampleSurveyState extends State<SampleSurvey> {
                       SizedBox(
                         width: 300,
                         height: 25,
+                        // X axis bar
                         child: FAProgressBar(
                           direction: Axis.horizontal,
-                          currentValue: 50,
+                          currentValue: (xDecimal * 100).toInt(),
                           backgroundColor: Colors.blueGrey,
                           progressColor: Colors.blue,
                           displayText: '%',
@@ -171,6 +175,16 @@ class _SampleSurveyState extends State<SampleSurvey> {
         ],
       ),
     );
+  }
+
+  // Since the y axis is originally calculated from the top of the screen to the bottom,
+  // the y axis needs to be transformed.
+  // First the y axis is set to a negative number,
+  // and then the y axis max length is added to it to essentially invert the y axis.
+  // That way as the cursor goes up for the y axis, the bar fills up instead of being depleted.
+  double yTransform(dy) {
+    var transformedY = -dy + 200;
+    return transformedY;
   }
 
   double calculator(double grid, double maxGrid) {
