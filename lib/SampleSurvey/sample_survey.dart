@@ -33,10 +33,10 @@ class _SampleSurveyState extends State<SampleSurvey> {
 
   bool show = false;
 
-  void _updateCursorLocation(PointerEvent details) {
+  void _updateCursorLocation(MoveEvent details) {
     setState(
       () {
-        xGrid = details.localPosition.dx;
+        xGrid = details.xPosition;
         if (kDebugMode) {
           print('x = ' + xGrid.toString());
         }
@@ -47,7 +47,7 @@ class _SampleSurveyState extends State<SampleSurvey> {
           print('\n');
         }
 
-        yGrid = yTransform(details.localPosition.dy);
+        yGrid = yTransform(details.yPosition);
         if (kDebugMode) {
           print('y = ' + yGrid.toString());
         }
@@ -61,7 +61,7 @@ class _SampleSurveyState extends State<SampleSurvey> {
     );
   }
 
-  void exit(PointerExitEvent event) {
+  void exit(MoveEvent event) {
     setState(() {
       xGrid = 0.0;
       yGrid = 0.0;
@@ -156,10 +156,11 @@ class _SampleSurveyState extends State<SampleSurvey> {
                         ),
                         child: GestureDetector(
                           onDoubleTap: submit,
+                          onPanUpdate: (details) => _updateCursorLocation(MoveEvent.fromDragUpdateDetails(details)),
                           child: MouseRegion(
-                            onExit: exit,
+                            onExit: (event) => exit(MoveEvent.fromPointerEvent(event)),
                             cursor: SystemMouseCursors.precise,
-                            onHover: _updateCursorLocation,
+                            onHover: (event) => _updateCursorLocation(MoveEvent.fromPointerEvent(event)),
                             child: Container(
                               color: Colors.blueGrey,
                             ),
@@ -220,5 +221,24 @@ class _SampleSurveyState extends State<SampleSurvey> {
       xPercent = xDecimal * 100;
       yPercent = yDecimal * 100;
     });
+  }
+}
+
+@immutable
+class MoveEvent {
+  final double xPosition;
+  final double yPosition;
+
+  const MoveEvent({
+    required this.xPosition,
+    required this.yPosition,
+  });
+
+  factory MoveEvent.fromPointerEvent(PointerEvent event) {
+    return MoveEvent(xPosition: event.localPosition.dx, yPosition: event.localPosition.dy);
+  }
+
+  factory MoveEvent.fromDragUpdateDetails(DragUpdateDetails event) {
+    return MoveEvent(xPosition: event.localPosition.dx, yPosition: event.localPosition.dy);
   }
 }
