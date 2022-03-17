@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 
@@ -27,6 +28,11 @@ class _SampleSurveyState extends State<SampleSurvey> {
   double xDecimal = 0.00;
   double yDecimal = 0.00;
 
+  double xPercent = 0;
+  double yPercent = 0;
+
+  bool show = false;
+
   void _updateCursorLocation(PointerEvent details) {
     setState(
       () {
@@ -53,6 +59,15 @@ class _SampleSurveyState extends State<SampleSurvey> {
         }
       },
     );
+  }
+
+  void exit(PointerExitEvent event) {
+    setState(() {
+      xGrid = 0.0;
+      yGrid = 0.0;
+      _updateCursorLocation(event);
+      show = false;
+    });
   }
 
   @override
@@ -139,11 +154,15 @@ class _SampleSurveyState extends State<SampleSurvey> {
                         constraints: BoxConstraints.tight(
                           const Size(300, 200),
                         ),
-                        child: MouseRegion(
-                          cursor: SystemMouseCursors.grab,
-                          onHover: _updateCursorLocation,
-                          child: Container(
-                            color: Colors.blueGrey,
+                        child: GestureDetector(
+                          onDoubleTap: submit,
+                          child: MouseRegion(
+                            onExit: exit,
+                            cursor: SystemMouseCursors.precise,
+                            onHover: _updateCursorLocation,
+                            child: Container(
+                              color: Colors.blueGrey,
+                            ),
                           ),
                         ),
                       ),
@@ -165,6 +184,8 @@ class _SampleSurveyState extends State<SampleSurvey> {
                       const Text(
                         "A Really Long Name For Thing B",
                         textScaleFactor: 1.25,
+                      ),
+                      if (show) Text( xPercent.toString() + " " + yPercent.toString(),
                       ),
                     ],
                   ),
@@ -191,5 +212,13 @@ class _SampleSurveyState extends State<SampleSurvey> {
     var decimal = grid / maxGrid;
     var formattedDecimal = double.parse(decimal.toStringAsFixed(2));
     return formattedDecimal;
+  }
+
+  submit() {
+    setState(() {
+      show = true;
+      xPercent = xDecimal * 100;
+      yPercent = yDecimal * 100;
+    });
   }
 }
