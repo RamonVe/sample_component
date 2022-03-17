@@ -70,6 +70,9 @@ class _SampleSurveyState extends State<SampleSurvey> {
     });
   }
 
+  final double sizeX = 25;
+  final double sizeY = 25;
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called.
@@ -161,8 +164,23 @@ class _SampleSurveyState extends State<SampleSurvey> {
                             onExit: (event) => exit(MoveEvent.fromPointerEvent(event)),
                             cursor: SystemMouseCursors.precise,
                             onHover: (event) => _updateCursorLocation(MoveEvent.fromPointerEvent(event)),
-                            child: Container(
-                              color: Colors.blueGrey,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  color: Colors.blueGrey,
+                                ),
+                                Positioned(
+                                  bottom: yGrid - (sizeY / 2),
+                                  left: xGrid - (sizeX / 2),
+                                  child: Center(
+                                    child: SizedBox(
+                                      height: sizeY,
+                                      width: sizeX,
+                                      child: Container(color: Colors.red),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -186,8 +204,10 @@ class _SampleSurveyState extends State<SampleSurvey> {
                         "A Really Long Name For Thing B",
                         textScaleFactor: 1.25,
                       ),
-                      if (show) Text( xPercent.toString() + " " + yPercent.toString(),
-                      ),
+                      if (show)
+                        Text(
+                          xPercent.toString() + " " + yPercent.toString(),
+                        ),
                     ],
                   ),
                 ],
