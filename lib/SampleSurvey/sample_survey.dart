@@ -252,6 +252,43 @@ class _SampleSurveyState extends State<SampleSurvey> {
                     ),
                     onPressed: () {
                       setState(() {
+                        submit();
+                      });
+                    },
+                    child: const Text('Submit'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 10.0),
+          ),
+          Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Stack(
+                children: <Widget>[
+                  Positioned.fill(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: <Color>[
+                            Color(0xFF0D47A1),
+                            Color(0xFF1976D2),
+                            Color(0xFF42A5F5),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      primary: Colors.white,
+                      textStyle: const TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      setState(() {
                         xGrid = 0.0;
                         yGrid = 0.0;
                         xDecimal = 0.0;
@@ -318,10 +355,16 @@ class _SampleSurveyState extends State<SampleSurvey> {
 
   Text results() {
     if (show) {
-      return Text("Thing A: " + yPercent.toInt().toString() + "% " + "Thing B: " + xPercent.toInt().toString() + "% ",
+      return Text(
+          "Thing A: " +
+              currentY(yDecimal).toInt().toString() +
+              "% " +
+              "Thing B: " +
+              currentX(xDecimal).toInt().toString() +
+              "% ",
           textScaleFactor: 1.5);
     } else {
-      return const Text("Double tap/click to submit.", textScaleFactor: 1.5);
+      return const Text("", textScaleFactor: 1.5);
     }
   }
 }
