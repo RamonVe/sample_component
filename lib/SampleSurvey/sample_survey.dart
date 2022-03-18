@@ -14,7 +14,6 @@ class SampleSurvey extends StatefulWidget {
   // case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
-
   final String title;
 
   @override
@@ -22,51 +21,19 @@ class SampleSurvey extends StatefulWidget {
 }
 
 class _SampleSurveyState extends State<SampleSurvey> {
+  // The coordinates of the region for the graph-like input widget are set to zero.
   double xGrid = 0.0;
   double yGrid = 0.0;
 
-  double xDecimal = 0.00;
-  double yDecimal = 0.00;
+  // The converted coordinates to decimal are set to zero.
+  double xDecimal = 0.0;
+  double yDecimal = 0.0;
 
+  // The converted decimal to percentages are set to zero.
   double xPercent = 0;
   double yPercent = 0;
 
-  void _updateCursorLocation(MoveEvent details) {
-    setState(
-      () {
-        xGrid = details.xPosition;
-        if (kDebugMode) {
-          print('xGrid = ' + xGrid.toString());
-        }
-
-        xDecimal = calculator(xGrid, 300);
-        if (kDebugMode) {
-          print('xDecimal % = ' + xDecimal.toString());
-          print('\n');
-        }
-
-        yGrid = yTransform(details.yPosition);
-        if (kDebugMode) {
-          print('yGrid = ' + yGrid.toString());
-        }
-
-        yDecimal = calculator(yGrid, 200);
-        if (kDebugMode) {
-          print('yDecimal % = ' + yDecimal.toString());
-          print('\n');
-        }
-      },
-    );
-  }
-
-  void exit(MoveEvent event) {
-    setState(() {
-      xGrid = 0.0;
-      yGrid = 0.0;
-      _updateCursorLocation(event);
-    });
-  }
-
+  // The size of the box used in the graph-like input widget are finalized.
   final double sizeX = 25;
   final double sizeY = 25;
 
@@ -160,11 +127,11 @@ class _SampleSurveyState extends State<SampleSurvey> {
                         ),
                         child: GestureDetector(
                           onDoubleTap: submit,
-                          onPanUpdate: (details) => _updateCursorLocation(MoveEvent.fromDragUpdateDetails(details)),
+                          onPanUpdate: (details) => _updateGestureLocation(MoveEvent.fromDragUpdateDetails(details)),
                           child: MouseRegion(
-                            onExit: (event) => exit(MoveEvent.fromPointerEvent(event)),
+                            onExit: (event) => onExit(MoveEvent.fromPointerEvent(event)),
                             cursor: SystemMouseCursors.precise,
-                            onHover: (event) => _updateCursorLocation(MoveEvent.fromPointerEvent(event)),
+                            onHover: (event) => _updateGestureLocation(MoveEvent.fromPointerEvent(event)),
                             child: Stack(
                               children: [
                                 Container(
@@ -248,9 +215,11 @@ class _SampleSurveyState extends State<SampleSurvey> {
                       textStyle: const TextStyle(fontSize: 20),
                     ),
                     onPressed: () {
-                      setState(() {
-                        submit();
-                      });
+                      setState(
+                        () {
+                          submit();
+                        },
+                      );
                     },
                     child: const Text('Submit'),
                   ),
@@ -285,12 +254,14 @@ class _SampleSurveyState extends State<SampleSurvey> {
                       textStyle: const TextStyle(fontSize: 20),
                     ),
                     onPressed: () {
-                      setState(() {
-                        xGrid = 0.0;
-                        yGrid = 0.0;
-                        xDecimal = 0.0;
-                        yDecimal = 0.0;
-                      });
+                      setState(
+                        () {
+                          xGrid = 0.0;
+                          yGrid = 0.0;
+                          xDecimal = 0.0;
+                          yDecimal = 0.0;
+                        },
+                      );
                     },
                     child: const Text('Reset'),
                   ),
@@ -303,22 +274,76 @@ class _SampleSurveyState extends State<SampleSurvey> {
     );
   }
 
+  // This function uses the MoveEvent class to update the coordinates of where the box is being dragged.
+  void _updateGestureLocation(MoveEvent details) {
+    setState(
+      () {
+        xGrid = details.xPosition;
+        if (kDebugMode) {
+          print(
+            'xGrid = ' + xGrid.toString(),
+          );
+        }
+
+        xDecimal = calculator(xGrid, 300);
+        if (kDebugMode) {
+          print(
+            'xDecimal % = ' + xDecimal.toString(),
+          );
+          print('\n');
+        }
+
+        yGrid = yTransform(details.yPosition);
+        if (kDebugMode) {
+          print(
+            'yGrid = ' + yGrid.toString(),
+          );
+        }
+
+        yDecimal = calculator(yGrid, 200);
+        if (kDebugMode) {
+          print(
+            'yDecimal % = ' + yDecimal.toString(),
+          );
+          print('\n');
+        }
+      },
+    );
+  }
+
+  // This function sets the coordinates to zero when the cursor leaves the graph-like widget.
+  // Only works properly for Web-App format and not mobile.
+  void onExit(MoveEvent event) {
+    setState(
+      () {
+        xGrid = 0.0;
+        yGrid = 0.0;
+        _updateGestureLocation(event);
+      },
+    );
+  }
+
   // Since the y axis is originally calculated from the top of the screen to the bottom,
   // the y axis needs to be transformed.
   // First the y axis is set to a negative number,
   // and then the y axis max length is added to it to essentially invert the y axis.
-  // That way as the cursor goes up for the y axis, the bar fills up instead of being depleted.
+  // That way as the box is dragged up for the y axis, the bar fills up instead of being depleted.
   double yTransform(dy) {
     var transformedY = -dy + 200;
     return transformedY;
   }
 
+  // This function converts coordinates into formatted decimals.
   double calculator(double grid, double maxGrid) {
     var decimal = grid / maxGrid;
-    var formattedDecimal = double.parse(decimal.toStringAsFixed(2));
+    var formattedDecimal = double.parse(
+      decimal.toStringAsFixed(2),
+    );
     return formattedDecimal;
   }
 
+  // This function prevents the x percentage from exceeding 100,
+  // or from ever being negative.
   int currentX(xDecimal) {
     var xInt = (xDecimal * 100).toInt();
     if (xInt > 100) {
@@ -330,6 +355,8 @@ class _SampleSurveyState extends State<SampleSurvey> {
     return xInt;
   }
 
+  // This function prevents the y percentage from exceeding 100,
+  // or from ever being negative.
   int currentY(yDecimal) {
     var yInt = (yDecimal * 100).toInt();
     if (yInt > 100) {
@@ -341,21 +368,24 @@ class _SampleSurveyState extends State<SampleSurvey> {
     return yInt;
   }
 
+  // This function does nothing, in theory this function would send the user to the next survey.
   submit() {
-    setState(() {
-      xPercent = xDecimal * 100;
-      yPercent = yDecimal * 100;
-    });
+    setState(
+      () {},
+    );
   }
 
+  // This function returns a text widget of the current percentages for wherever the box is dragged to,
+  // This function is needed because percentages below ten don't show properly in the progress bars.
   Text results() {
     return Text(
-        "Thing A: " +
-            currentY(yDecimal).toInt().toString() +
-            "% " +
-            "Thing B: " +
-            currentX(xDecimal).toInt().toString() +
-            "% ",
-        textScaleFactor: 1.5);
+      "Thing A: " +
+          currentY(yDecimal).toInt().toString() +
+          "% " +
+          "Thing B: " +
+          currentX(xDecimal).toInt().toString() +
+          "% ",
+      textScaleFactor: 1.5,
+    );
   }
 }
