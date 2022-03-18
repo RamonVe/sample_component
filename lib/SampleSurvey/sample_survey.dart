@@ -31,8 +31,6 @@ class _SampleSurveyState extends State<SampleSurvey> {
   double xPercent = 0;
   double yPercent = 0;
 
-  bool show = false;
-
   void _updateCursorLocation(MoveEvent details) {
     setState(
       () {
@@ -66,7 +64,6 @@ class _SampleSurveyState extends State<SampleSurvey> {
       xGrid = 0.0;
       yGrid = 0.0;
       _updateCursorLocation(event);
-      show = false;
     });
   }
 
@@ -143,7 +140,7 @@ class _SampleSurveyState extends State<SampleSurvey> {
                     ),
                   ),
                   const Padding(
-                    padding: EdgeInsets.all(15.00),
+                    padding: EdgeInsets.all(17.00),
                   ),
                 ],
               ),
@@ -293,7 +290,6 @@ class _SampleSurveyState extends State<SampleSurvey> {
                         yGrid = 0.0;
                         xDecimal = 0.0;
                         yDecimal = 0.0;
-                        show = false;
                       });
                     },
                     child: const Text('Reset'),
@@ -347,24 +343,19 @@ class _SampleSurveyState extends State<SampleSurvey> {
 
   submit() {
     setState(() {
-      show = true;
       xPercent = xDecimal * 100;
       yPercent = yDecimal * 100;
     });
   }
 
   Text results() {
-    if (show) {
-      return Text(
-          "Thing A: " +
-              currentY(yDecimal).toInt().toString() +
-              "% " +
-              "Thing B: " +
-              currentX(xDecimal).toInt().toString() +
-              "% ",
-          textScaleFactor: 1.5);
-    } else {
-      return const Text("", textScaleFactor: 1.5);
-    }
+    return Text(
+        "Thing A: " +
+            currentY(yDecimal).toInt().toString() +
+            "% " +
+            "Thing B: " +
+            currentX(xDecimal).toInt().toString() +
+            "% ",
+        textScaleFactor: 1.5);
   }
 }
