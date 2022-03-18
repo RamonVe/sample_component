@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
+import '../Utils/move_event.dart';
 
 class SampleSurvey extends StatefulWidget {
   const SampleSurvey({Key? key, required this.title}) : super(key: key);
@@ -38,23 +38,23 @@ class _SampleSurveyState extends State<SampleSurvey> {
       () {
         xGrid = details.xPosition;
         if (kDebugMode) {
-          print('x = ' + xGrid.toString());
+          print('xGrid = ' + xGrid.toString());
         }
 
         xDecimal = calculator(xGrid, 300);
         if (kDebugMode) {
-          print('x % = ' + xDecimal.toString());
+          print('xDecimal % = ' + xDecimal.toString());
           print('\n');
         }
 
         yGrid = yTransform(details.yPosition);
         if (kDebugMode) {
-          print('y = ' + yGrid.toString());
+          print('yGrid = ' + yGrid.toString());
         }
 
         yDecimal = calculator(yGrid, 200);
         if (kDebugMode) {
-          print('y % = ' + yDecimal.toString());
+          print('yDecimal % = ' + yDecimal.toString());
           print('\n');
         }
       },
@@ -104,6 +104,9 @@ class _SampleSurveyState extends State<SampleSurvey> {
                     textScaleFactor: 1.5,
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsets.only(top: 50.00),
+                ),
               ],
             ),
           ),
@@ -132,10 +135,11 @@ class _SampleSurveyState extends State<SampleSurvey> {
                     child: FAProgressBar(
                       direction: Axis.vertical,
                       verticalDirection: VerticalDirection.up,
-                      currentValue: (yDecimal * 100).toInt(),
+                      currentValue: currentY(yDecimal),
                       backgroundColor: Colors.blueGrey,
                       progressColor: Colors.blue,
                       displayText: '%',
+                      animatedDuration: Duration.zero,
                     ),
                   ),
                   const Padding(
@@ -176,7 +180,7 @@ class _SampleSurveyState extends State<SampleSurvey> {
                                     child: SizedBox(
                                       height: sizeY,
                                       width: sizeX,
-                                      child: Container(color: Colors.red),
+                                      child: Container(color: Colors.blue),
                                     ),
                                   ),
                                 ),
@@ -194,25 +198,75 @@ class _SampleSurveyState extends State<SampleSurvey> {
                         // X axis bar
                         child: FAProgressBar(
                           direction: Axis.horizontal,
-                          currentValue: (xDecimal * 100).toInt(),
+                          currentValue: currentX(xDecimal),
                           backgroundColor: Colors.blueGrey,
                           progressColor: Colors.blue,
                           displayText: '%',
+                          animatedDuration: Duration.zero,
+                          maxValue: 100,
                         ),
                       ),
                       const Text(
                         "A Really Long Name For Thing B",
                         textScaleFactor: 1.25,
                       ),
-                      if (show)
-                        Text(
-                          xPercent.toString() + " " + yPercent.toString(),
-                        ),
                     ],
                   ),
                 ],
               ),
             ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 60.0),
+                child: Container(
+                  child: results(),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 40.0),
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Stack(
+                  children: <Widget>[
+                    Positioned.fill(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: <Color>[
+                              Color(0xFF0D47A1),
+                              Color(0xFF1976D2),
+                              Color(0xFF42A5F5),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.all(16.0),
+                        primary: Colors.white,
+                        textStyle: const TextStyle(fontSize: 20),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          xGrid = 0.0;
+                          yGrid = 0.0;
+                          xDecimal = 0.0;
+                          yDecimal = 0.0;
+                        });
+                      },
+                      child: const Text('Reset'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -235,6 +289,28 @@ class _SampleSurveyState extends State<SampleSurvey> {
     return formattedDecimal;
   }
 
+  int currentX(xDecimal) {
+    var xInt = (xDecimal * 100).toInt();
+    if (xInt > 100) {
+      xInt = 100;
+    }
+    if (xInt < 0) {
+      xInt = 0;
+    }
+    return xInt;
+  }
+
+  int currentY(yDecimal) {
+    var yInt = (yDecimal * 100).toInt();
+    if (yInt > 100) {
+      yInt = 100;
+    }
+    if (yInt < 0) {
+      yInt = 0;
+    }
+    return yInt;
+  }
+
   submit() {
     setState(() {
       show = true;
@@ -242,23 +318,13 @@ class _SampleSurveyState extends State<SampleSurvey> {
       yPercent = yDecimal * 100;
     });
   }
-}
 
-@immutable
-class MoveEvent {
-  final double xPosition;
-  final double yPosition;
-
-  const MoveEvent({
-    required this.xPosition,
-    required this.yPosition,
-  });
-
-  factory MoveEvent.fromPointerEvent(PointerEvent event) {
-    return MoveEvent(xPosition: event.localPosition.dx, yPosition: event.localPosition.dy);
-  }
-
-  factory MoveEvent.fromDragUpdateDetails(DragUpdateDetails event) {
-    return MoveEvent(xPosition: event.localPosition.dx, yPosition: event.localPosition.dy);
+  Text results() {
+    if (show) {
+      return Text("Thing A: " + yPercent.toInt().toString() + "% " + "Thing B: " + xPercent.toInt().toString() + "% ",
+          textScaleFactor: 1.5);
+    } else {
+      return const Text("Double tap/click on your vote to submit.", textScaleFactor: 1.5);
+    }
   }
 }
