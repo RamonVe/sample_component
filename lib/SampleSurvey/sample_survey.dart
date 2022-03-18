@@ -119,9 +119,9 @@ class _SampleSurveyState extends State<SampleSurvey> {
                   RotatedBox(
                     quarterTurns: 3,
                     child: Text(
-                      'A Really Long Name For Thing A',
+                      'Thing A',
                       textDirection: TextDirection.rtl,
-                      textScaleFactor: 1.25,
+                      textScaleFactor: 1.50,
                     ),
                   ),
                 ],
@@ -206,9 +206,12 @@ class _SampleSurveyState extends State<SampleSurvey> {
                           maxValue: 100,
                         ),
                       ),
-                      const Text(
-                        "A Really Long Name For Thing B",
-                        textScaleFactor: 1.25,
+                      const Padding(
+                        padding: EdgeInsets.only(right: 60.0),
+                        child: Text(
+                          "Thing B",
+                          textScaleFactor: 1.50,
+                        ),
                       ),
                     ],
                   ),
@@ -219,53 +222,46 @@ class _SampleSurveyState extends State<SampleSurvey> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 60.0),
-                child: Container(
-                  child: results(),
-                ),
+              child: Container(
+                child: results(),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 40.0),
-            child: Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: Stack(
-                  children: <Widget>[
-                    Positioned.fill(
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: <Color>[
-                              Color(0xFF0D47A1),
-                              Color(0xFF1976D2),
-                              Color(0xFF42A5F5),
-                            ],
-                          ),
+          Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Stack(
+                children: <Widget>[
+                  Positioned.fill(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: <Color>[
+                            Color(0xFF0D47A1),
+                            Color(0xFF1976D2),
+                            Color(0xFF42A5F5),
+                          ],
                         ),
                       ),
                     ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.all(16.0),
-                        primary: Colors.white,
-                        textStyle: const TextStyle(fontSize: 20),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          xGrid = 0.0;
-                          yGrid = 0.0;
-                          xDecimal = 0.0;
-                          yDecimal = 0.0;
-                          show = false;
-                        });
-                      },
-                      child: const Text('Reset'),
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      primary: Colors.white,
+                      textStyle: const TextStyle(fontSize: 20),
                     ),
-                  ],
-                ),
+                    onPressed: () {
+                      setState(() {
+                        xGrid = 0.0;
+                        yGrid = 0.0;
+                        xDecimal = 0.0;
+                        yDecimal = 0.0;
+                        show = false;
+                      });
+                    },
+                    child: const Text('Reset'),
+                  ),
+                ],
               ),
             ),
           ),
