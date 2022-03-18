@@ -100,7 +100,7 @@ class _SampleSurveyState extends State<SampleSurvey> {
               children: const <Widget>[
                 Flexible(
                   child: Text(
-                    "A Really Long Sample Survey Title: Thing A Vs. Thing B",
+                    "A Sample Title: Thing A Vs. Thing B",
                     textScaleFactor: 1.5,
                   ),
                 ),
@@ -259,6 +259,7 @@ class _SampleSurveyState extends State<SampleSurvey> {
                           yGrid = 0.0;
                           xDecimal = 0.0;
                           yDecimal = 0.0;
+                          show = false;
                         });
                       },
                       child: const Text('Reset'),
@@ -324,7 +325,7 @@ class _SampleSurveyState extends State<SampleSurvey> {
       return Text("Thing A: " + yPercent.toInt().toString() + "% " + "Thing B: " + xPercent.toInt().toString() + "% ",
           textScaleFactor: 1.5);
     } else {
-      return const Text("Double tap/click on your vote to submit.", textScaleFactor: 1.5);
+      return const Text("Double tap/click to submit.", textScaleFactor: 1.5);
     }
   }
 }
